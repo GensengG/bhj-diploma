@@ -18,7 +18,11 @@ class User {
     createRequest({
       url: this.URL + "/current",
       method: "GET",
+      responseType: "json",
       callback: (err, response) => {
+        if (response && response.user) {
+          this.setCurrent(response.user);
+        }
         callback(err, response);
       }
     });
