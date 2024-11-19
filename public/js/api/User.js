@@ -1,5 +1,5 @@
 class User {
-  URL = this.URL + "/user";
+  static URL = "/user";
 
   static setCurrent(user) {
     localStorage.user = JSON.stringify(user);
@@ -11,7 +11,13 @@ class User {
   }
 
   static current() {
-      console.log(localStorage.user);
+      let data;
+      if(localStorage.user){
+        data = JSON.parse(localStorage.user);
+      } else {
+        data = undefined;
+      }
+      return data;
   }
 
   static fetch(callback) {
@@ -19,6 +25,7 @@ class User {
       url: this.URL + "/current",
       method: "GET",
       responseType: "json",
+      data: User.current(),
       callback: (err, response) => {
         if (response && response.user) {
           this.setCurrent(response.user);
@@ -32,7 +39,8 @@ class User {
     createRequest({
       url: this.URL + "/login",
       method: "POST",
-      data,
+      responseType: "json",
+      data: User.current(),
       callback: (err, response) => {
         if (response && response.user) {
           this.setCurrent(response.user);
@@ -46,9 +54,10 @@ class User {
     createRequest({
       url: this.URL + "/register",
       method: "POST",
-      data,
+      responseType: "json",
+      data: User.current(),
       callback: (err, response) => {
-        if (response && response.user) {
+        if (response.success) {
           this.setCurrent(response.user);
         }
         callback(err, response);
@@ -60,14 +69,16 @@ class User {
     createRequest({
       url: this.URL + "/logout",
       method: "POST",
-      data,
+      responseType: "json",
+      data: User.current(),
       callback: (err, response) => {
-        if (response && response.success) {
-          this.unsetCurrent();
+        if (response && response.user) {
+          this.setCurrent(response.user);
         }
         callback(err, response);
       }
     })
+    this.unsetCurrent();
   }
 }
  
