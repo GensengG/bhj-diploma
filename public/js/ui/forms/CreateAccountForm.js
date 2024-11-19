@@ -9,10 +9,6 @@ class CreateAccountForm extends AsyncForm {
    * и сбрасывает форму
    * */
   onSubmit(data) {
-    User.register(data, (response) => {});
-      if(response.success){
-        App.setState("user-logged");
-        Modal.close();
-    }
+
   }
 }
