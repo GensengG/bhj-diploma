@@ -6,6 +6,7 @@ const createRequest = (options = {}) => {
         data = options.data;
         url = options.url;
         xhr.responseType = "json";
+        xhr.withCredentials = true;
 
         if (options.method === "GET") {
             url = url + "?"
@@ -22,9 +23,28 @@ const createRequest = (options = {}) => {
             xhr.open(options.method, url);
 	        xhr.send(formData);
         }
+
+        response = xhr.response;
+
+        callback: (err, response) => {
+            if(err) {
+                console.log(xhr.response.error);
+            } else {
+                console.log(xhr.response.success);
+            }
+        }
+    }
+
+    try {
+        xhr.open(options.method, url);
+        xhr.send(); 
+        xhr.send(formData); 
+    } catch (error) {
+        options.callback(error, xhr.response);
     }
 
     xhr.addEventListener("load", () => {
-        options.callback(xhr.response.error, xhr.response);
+        options.callback(xhr.response);
     })
+
 }
